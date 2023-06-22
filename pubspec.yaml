@@ -1,6 +1,6 @@
 name: multi_contact_picker
-description: Select multiple contacts at once
-version: 1.1.2
+description: Flutter package that allows a highly customisable widget that helps you pick multiple contacts at once
+version: 1.1.5
 homepage: https://github.com/harithwick/multi_contact_picker
 
 environment:

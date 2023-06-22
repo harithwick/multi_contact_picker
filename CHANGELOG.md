@@ -1,8 +1,15 @@
+## 1.1.5
+
+Added example
+
+## 1.1.2
+
+Adding comments
 
 ## 1.1.1
 
-- Refactoring
-- Adding empty state when no contacts are available to select from
+Refactoring
+Adding empty state when no contacts are available to select from
 
 ## 1.1.0
 
