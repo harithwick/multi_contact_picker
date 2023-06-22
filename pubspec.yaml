@@ -1,6 +1,6 @@
 name: multi_contact_picker
 description: Select multiple contacts at once
-version: 1.1.0
+version: 1.1.1
 homepage: https://github.com/harithwick/multi_contact_picker
 
 environment:

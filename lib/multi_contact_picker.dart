@@ -5,18 +5,36 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MultiContactPicker extends StatefulWidget {
+  /// App bar of the scaffold
+  final PreferredSizeWidget? appBar;
+
+  /// The background color taken up by the leading CircleAvatar
   final Color? leadingAvatarColor;
-  final Widget Function(BuildContext, Contact)? contactBuilder;
+
+  /// Displayed when the number of contacts to display is zero
+  final Widget? emptyState;
+
+  /// Customise the way the contacts are displayed
+  final Widget Function(BuildContext context, Contact contact, bool selected)?
+      contactBuilder;
+
+  /// Customise the way the contacts are displayed
   final Widget? floatingActionButton;
+
+  /// Customise the loader shown when the contacts are being pulled from the device
   final Widget? loader;
-  final Widget Function(PermissionStatus)? error;
+
+  /// Customise the error widget displayed when contacts the contacts cannot be retrieved from the device
+  final Widget Function(PermissionStatus permissionStatus)? error;
   const MultiContactPicker(
       {Key? key,
       this.error,
       this.leadingAvatarColor,
       this.loader,
       this.floatingActionButton,
-      this.contactBuilder})
+      this.contactBuilder,
+      this.emptyState,
+      this.appBar})
       : super(key: key);
 
   @override
@@ -160,30 +178,74 @@ class _MultiContactPickerState extends State<MultiContactPicker> {
     return null;
   }
 
+  Widget buildEmptyState() {
+    return const Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            "No contacts available to display",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ],
+      )),
+    );
+  }
+
+  Widget buildBodySection() {
+    if (_contacts.isEmpty) {
+      if (widget.emptyState != null) {
+        return widget.emptyState!;
+      }
+      return buildEmptyState();
+    }
+    return ListView.separated(
+      shrinkWrap: true,
+      padding: const EdgeInsets.only(bottom: 50),
+      separatorBuilder: (context, index) {
+        return Divider(
+          color: Colors.grey.shade200,
+          height: 0,
+        );
+      },
+      itemCount: _contacts.length,
+      itemBuilder: (BuildContext context, int index) {
+        Contact contact = _contacts[index];
+        return widget.contactBuilder != null
+            ? widget.contactBuilder!(
+                context, contact, selectedContacts.contains(contact))
+            : _buildListTile(contact);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
         child: Scaffold(
-      appBar: AppBar(),
-      body: centeredLoader(
-        child: ListView.separated(
-          shrinkWrap: true,
-          padding: const EdgeInsets.only(bottom: 50),
-          separatorBuilder: (context, index) {
-            return Divider(
-              color: Colors.grey.shade200,
-              height: 0,
-            );
-          },
-          itemCount: _contacts.length,
-          itemBuilder: (BuildContext context, int index) {
-            Contact contact = _contacts[index];
-            return widget.contactBuilder != null
-                ? widget.contactBuilder!(context, contact)
-                : _buildListTile(contact);
-          },
-        ),
-      ),
+      appBar: widget.appBar ??
+          AppBar(
+            automaticallyImplyLeading: false,
+            actions: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context);
+                },
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey.shade200,
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.black,
+                  ),
+                ),
+              )
+            ],
+          ),
+      body: centeredLoader(child: buildBodySection()),
       floatingActionButton: buildFloatingActionButton(),
     ));
   }
