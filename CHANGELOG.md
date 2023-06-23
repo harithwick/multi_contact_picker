@@ -1,3 +1,9 @@
+## 1.1.6
+
+Fixed padding of the top close button
+contactBuilder how has a selected callback to indicate if a contact has been selected 
+Updated example repo to include an a advanced usage example
+
 ## 1.1.5
 
 Added example

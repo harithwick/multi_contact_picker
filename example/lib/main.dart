@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           .then((value) {
                         if (value != null) {
                           // List of selected contacts will be returned to you
-                          debugPrint(value);
+                          debugPrint(value.toString());
                         }
                       });
                     },
@@ -73,11 +73,72 @@ class _HomeScreenState extends State<HomeScreen> {
                             return MultiContactPicker();
                           }).then((value) {
                         if (value != null) {
-                          debugPrint(value);
+                          debugPrint(value.toString());
                         }
                       });
                     },
-                    child: const Text("Dialog Box"))
+                    child: const Text("Dialog Box")),
+                const SizedBox(height: 30),
+                TextButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return MultiContactPicker(
+                              appBar: AppBar(
+                                title: const Text("Contact Picker"),
+                              ),
+                              floatingActionButton: const CircleAvatar(
+                                backgroundColor: Colors.blue,
+                                child: Icon(Icons.check),
+                              ),
+                              loader: const CircularProgressIndicator(),
+                              error: (permission) {
+                                return Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      "Error trying to get contacts",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Text(
+                                      permission.toString(),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                );
+                              },
+                              emptyState: const Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "No contacts to display",
+                                    textAlign: TextAlign.center,
+                                  )
+                                ],
+                              ),
+                              contactBuilder: (context, contact, selected) {
+                                return ListTile(
+                                  title: Text(contact.displayName.toString()),
+                                  trailing: Checkbox(
+                                    activeColor: Colors.blue,
+                                    checkColor: Colors.white,
+                                    onChanged: (value) {},
+                                    value: selected,
+                                  ),
+                                );
+                              },
+                            );
+                          }).then((value) {
+                        if (value != null) {
+                          debugPrint(value.toString());
+                        }
+                      });
+                    },
+                    child: const Text("Advanced Customisations"))
               ],
             ),
           ),

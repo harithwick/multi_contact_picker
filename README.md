@@ -30,7 +30,7 @@ Android: Add the following `<uses-permissions>` tags to your app's `AndroidManif
     ...
 ```
 
-### Usage
+## Usage
 
 Multi contact can be used in two forms, as a fullscreen dialog or as a standalone screen. My personal preference is a fullscreen dialog.
 
@@ -61,5 +61,68 @@ Navigator.push(context,
       debugPrint(value);
     }
 });
+
+```
+
+## Advanced Example 
+```dart
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return MultiContactPicker(
+          appBar: AppBar(
+            title: const Text("Contact Picker"),
+          ),
+          floatingActionButton: const CircleAvatar(
+            backgroundColor: Colors.blue,
+            child: Icon(Icons.check),
+          ),
+          loader: const CircularProgressIndicator(),
+          error: (permission) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  "Error trying to get contacts",
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  permission.toString(),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            );
+          },
+          emptyState: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "No contacts to display",
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
+          contactBuilder: (context, contact, selected) {
+            return ListTile(
+              title: Text(contact.displayName.toString()),
+              trailing: Checkbox(
+                activeColor: Colors.blue,
+                checkColor: Colors.white,
+                onChanged: (value) {},
+                value: selected,
+              ),
+            );
+          },
+        );
+      }).then((value) {
+        if (value != null) {
+          // Returns a List<Contact>
+          debugPrint(value.toString());
+        }
+    },
+);
 
 ```
